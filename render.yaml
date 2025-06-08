@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: sql-query-hub-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: UPLOAD_DIR
+        value: uploads 
