@@ -2,20 +2,35 @@
 
 A powerful Node.js backend service for executing SQL queries across multiple database types with organized exports and logging capabilities.
 
-## Features
+## 🌐 Live API
+The backend API is deployed and accessible at: [SQL Query Hub API](https://sql-query-hub-backend.onrender.com)
+
+## ✨ Features
 
 - **Multi-Database Support**: Execute queries on MySQL, PostgreSQL, and MSSQL databases
 - **Organized Exports**: Automatically exports query results to CSV files
 - **Query Batching**: Run multiple SQL queries in sequence
 - **Structured Output**: Creates organized folders for each execution with:
-  - Query results in CSV format
+  - Query results in XLSX format
   - Execution logs
   - Row count summaries
 - **ZIP Compression**: Automatically compresses results for easy download
 - **Error Handling**: Comprehensive error handling and logging
+- **File Management**: Automatic cleanup of temporary files
+- **Cross-Origin Support**: Configured CORS for secure frontend communication
 
-## Prerequisites
+## 🛠️ Tech Stack
 
+- Node.js
+- Express.js
+- MySQL2
+- PostgreSQL
+- MSSQL
+- Render (Hosting)
+
+## 🚀 Getting Started
+
+### Prerequisites
 - Node.js (v16 or higher)
 - npm (v7 or higher)
 - Access to at least one of the following databases:
@@ -23,11 +38,11 @@ A powerful Node.js backend service for executing SQL queries across multiple dat
   - PostgreSQL
   - MSSQL
 
-## Installation
+### Local Installation
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/Ali-Bhatti/sql-query-hub-backend.git
 cd sql-query-hub-backend
 ```
 
@@ -40,9 +55,59 @@ npm install
 ```env
 PORT=3000
 UPLOAD_DIR=uploads
+NODE_ENV=development
 ```
 
-## Project Structure
+4. Start the server:
+```bash
+npm start
+```
+
+## API Endpoints
+
+### POST /api/queries/execute-queries
+Execute multiple SQL queries and export results.
+
+**Request Body:**
+```json
+{
+  "queries": ["SELECT * FROM users", "SELECT * FROM orders"],
+  "shouldExport": true,
+  "dbConfig": {
+    "type": "mysql|postgres|mssql",
+    "configs": [{
+      "name": "Database 1",
+      "host": "localhost",
+      "port": "3306",
+      "user": "username",
+      "password": "password",
+      "database": "dbname"
+    }]
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "results": {
+    "Database 1": [{
+      "queryNumber": "query_1",
+      "rows": [...],
+      "count": 10,
+      "exportPath": "path/to/export.xlsx"
+    }]
+  },
+  "counts": {
+    "query_1": {
+      "Database 1": 10
+    }
+  },
+  "zipPath": "path/to/results.zip"
+}
+```
+
+## 📁 Project Structure
 
 ```
 sql-query-hub-backend/
@@ -63,69 +128,17 @@ sql-query-hub-backend/
 └── package.json         # Project dependencies
 ```
 
-## API Endpoints
+## 🔧 Configuration
 
-### POST /api/queries/execute-queries
-Execute multiple SQL queries and export results.
+### Environment Variables
 
-**Request Body:**
-```json
-{
-  "queries": ["SELECT * FROM table1", "SELECT * FROM table2"],
-  "shouldExport": true,
-  "dbConfig": {
-    "type": "mysql|postgres|mssql",
-    "host": "localhost",
-    "port": 3306,
-    "database": "db_name",
-    "user": "username",
-    "password": "password"
-  }
-}
-```
+| Variable | Description | Default |
+|----------|-------------|---------|
+| PORT | Server port | 3000 |
+| UPLOAD_DIR | Directory for temporary files | uploads |
+| NODE_ENV | Environment mode | development |
 
-### GET /api/queries/download-results
-Download zipped query results.
-
-**Query Parameters:**
-- `zipPath`: Path to the ZIP file containing results
-
-## Development
-
-Start the development server with hot reload:
-```bash
-npm run dev
-```
-
-Start the production server:
-```bash
-npm start
-```
-
-## Error Handling
-
-The application includes comprehensive error handling for:
-- Database connection issues
-- Query execution errors
-- File system operations
-- Invalid request formats
-
-All errors are logged and returned with appropriate HTTP status codes and descriptive messages.
-
-## Output Structure
-
-For each query execution, the following structure is created:
-```
-queries-execution/
-└── execution_YYYY-MM-DD_HH-MM-SS/
-    ├── exports/
-    │   ├── query_1.csv
-    │   └── query_2.csv
-    ├── COUNT.txt
-    └── logs.txt
-```
-
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create your feature branch
